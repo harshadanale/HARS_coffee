@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HARS — The Art of Coffee · Kolhapur</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --tan:#C4923A;
+  --tan-bg:#C9A256;
+  --tan-light:#D9BC80;
+  --tan-lighter:#E8D4A8;
+  --espresso:#2A1B0E;
+  --espresso-2:#3A2614;
+  --espresso-3:#1C1208;
+  --cream:#FAF4E8;
+  --ink:#1E1208;
+  --muted:#7A5C38;
+  --muted-light:#A07848;
+  --ease-silk:cubic-bezier(0.16,1,0.3,1);
+  --ease-bounce:cubic-bezier(0.34,1.56,0.64,1);
+}
+html{overflow-x:hidden;scroll-behavior:smooth}
+body{background:var(--tan-bg);color:var(--ink);font-family:'Inter',sans-serif;font-weight:400;overflow-x:hidden;cursor:none}
+::selection{background:var(--espresso);color:var(--cream)}
+
+/* CURSOR */
+#cursor{position:fixed;width:10px;height:10px;background:var(--espresso);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s}
+#cursor-follower{position:fixed;width:38px;height:38px;border:1.5px solid rgba(42,27,14,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .4s var(--ease-silk),height .4s var(--ease-silk)}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--espresso);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem}
+#l-logo{font-family:'Fraunces',serif;font-size:5rem;font-weight:500;color:var(--cream);opacity:0;transform:translateY(20px);transition:opacity .9s,transform .9s}
+#l-city{font-size:.7rem;letter-spacing:.45em;text-transform:uppercase;color:var(--tan-light);opacity:0;transition:opacity .6s .3s}
+#l-bar-wrap{width:210px;height:3px;background:rgba(250,244,232,.12);overflow:hidden;border-radius:3px}
+#l-bar{height:100%;width:0;background:linear-gradient(90deg,var(--tan),var(--tan-light));transition:width .05s linear}
+#l-pct{font-size:.65rem;letter-spacing:.2em;color:rgba(217,188,128,.7);opacity:0;transition:opacity .5s .2s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.8rem 4rem;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+nav.scrolled{background:rgba(196,162,86,.95);backdrop-filter:blur(20px);padding:1rem 4rem;box-shadow:0 4px 30px rgba(42,27,14,.12)}
+.nav-logo{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;color:var(--espresso);letter-spacing:.02em}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-size:.82rem;font-weight:500;color:var(--espresso);text-decoration:none;opacity:.7;transition:opacity .3s}
+.nav-links a:hover{opacity:1}
+.nav-cta{font-size:.82rem;font-weight:600;color:var(--cream);background:var(--espresso);border:none;border-radius:30px;padding:.75rem 1.8rem;cursor:none;transition:transform .3s var(--ease-bounce),background .3s}
+.nav-cta:hover{transform:scale(1.05);background:var(--espresso-2)}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;align-items:center;padding:9rem 4rem 5rem;background:var(--tan-bg)}
+.hero-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;width:100%}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.6rem;background:rgba(42,27,14,.1);border-radius:30px;padding:.5rem 1.2rem;font-size:.72rem;font-weight:500;color:var(--espresso-2);margin-bottom:2rem;opacity:0;transform:translateY(14px)}
+.loc-pulse{width:6px;height:6px;border-radius:50%;background:var(--espresso);animation:pdot 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pdot{0%,100%{box-shadow:0 0 0 0 rgba(42,27,14,.4)}50%{box-shadow:0 0 0 6px rgba(42,27,14,0)}}
+.hero-title{font-family:'Fraunces',serif;font-size:clamp(3rem,5.5vw,5.8rem);font-weight:400;line-height:1;margin-bottom:1.8rem;color:var(--ink)}
+.hero-title .line{display:block;overflow:hidden;line-height:1.1}
+.hero-title .line span{display:block;opacity:0;transform:translateY(80px)}
+.hl{background:var(--espresso);color:var(--cream);padding:.05em .3em;border-radius:8px;display:inline-block}
+.hero-sub{font-size:.98rem;color:var(--muted);line-height:1.8;max-width:430px;margin-bottom:2.5rem;opacity:0;transform:translateY(14px)}
+.hero-btns{display:flex;gap:1rem;align-items:center;opacity:0;transform:translateY(14px)}
+.btn-dark{display:inline-flex;align-items:center;gap:.6rem;padding:.95rem 2rem;background:var(--espresso);color:var(--cream);border-radius:30px;border:none;font-size:.84rem;font-weight:600;cursor:none;transition:transform .3s var(--ease-bounce)}
+.btn-dark:hover{transform:scale(1.04)}
+.btn-outline{display:inline-flex;align-items:center;gap:.6rem;padding:.95rem 2rem;background:transparent;color:var(--espresso);border-radius:30px;border:1.5px solid rgba(42,27,14,.3);font-size:.84rem;font-weight:500;cursor:none;transition:border-color .3s,background .3s}
+.btn-outline:hover{border-color:var(--espresso);background:rgba(42,27,14,.06)}
+
+/* HERO VISUAL */
+.hero-visual{position:relative;height:580px}
+.hero-img-main{position:absolute;top:0;right:0;width:430px;height:430px;border-radius:50%;overflow:hidden;border:6px solid var(--cream);box-shadow:0 30px 70px rgba(42,27,14,.2)}
+.hero-img-main img{width:100%;height:100%;object-fit:cover;transform:scale(1.05);transition:transform 8s ease}
+.hero-img-main:hover img{transform:scale(1.12)}
+.hero-badge{position:absolute;bottom:40px;left:10px;width:120px;height:120px;border-radius:50%;background:var(--espresso);color:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 20px 50px rgba(42,27,14,.3);transform:rotate(-10deg);z-index:3}
+.hero-badge-num{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:600;line-height:1}
+.hero-badge-txt{font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;margin-top:.2rem;max-width:85px;line-height:1.3;color:var(--tan-light)}
+.hero-float-card{position:absolute;top:55px;left:-15px;background:var(--cream);border-radius:16px;padding:.9rem 1.2rem;box-shadow:0 16px 40px rgba(42,27,14,.15);display:flex;align-items:center;gap:.75rem;animation:floaty 4s ease-in-out infinite;z-index:3}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.float-icon{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.float-icon img{width:100%;height:100%;object-fit:cover}
+.float-label{font-size:.6rem;color:var(--muted);font-weight:500}
+.float-val{font-size:.82rem;font-weight:700;color:var(--espresso)}
+
+/* MARQUEE */
+.marquee-section{padding:1.5rem 0;overflow:hidden;background:var(--espresso)}
+.marquee-track{display:flex;gap:4rem;white-space:nowrap;animation:marquee 22s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.m-item{font-family:'Fraunces',serif;font-style:italic;font-size:1.05rem;color:var(--tan-light);display:flex;align-items:center;gap:4rem;flex-shrink:0}
+.m-dot{width:5px;height:5px;border-radius:50%;background:var(--tan)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s var(--ease-silk),transform .9s var(--ease-silk)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.s1{transition-delay:.1s}.s2{transition-delay:.2s}.s3{transition-delay:.3s}.s4{transition-delay:.4s}
+
+/* ── ABOUT ── */
+#about{background:var(--tan-bg);padding:7rem 4rem}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:1300px;margin:0 auto}
+.sec-tag{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;display:block}
+.sec-title{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(2rem,3.5vw,3rem);line-height:1.1;color:var(--ink)}
+.about-shop-btn{display:inline-flex;align-items:center;gap:.6rem;background:var(--cream);border:none;border-radius:30px;padding:.85rem 1.8rem;font-size:.82rem;font-weight:600;color:var(--espresso);cursor:none;margin-top:1.8rem;transition:transform .3s var(--ease-bounce),box-shadow .3s}
+.about-shop-btn:hover{transform:scale(1.04);box-shadow:0 8px 30px rgba(42,27,14,.15)}
+.about-features{margin-top:2rem;border-top:1px solid rgba(42,27,14,.15)}
+.about-feat{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid rgba(42,27,14,.12);font-size:.88rem;font-weight:500;color:var(--espresso-2);cursor:none}
+.feat-arrow{width:24px;height:24px;border-radius:50%;border:1px solid rgba(42,27,14,.25);display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .3s}
+.about-feat:hover .feat-arrow{background:var(--espresso);color:var(--cream);transform:rotate(45deg)}
+
+/* ABOUT VISUAL */
+.about-visual{position:relative;height:540px}
+.a-stamp{position:absolute;top:-10px;left:5%;width:88px;height:88px;border-radius:50%;border:2px dashed rgba(42,27,14,.35);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:.62rem;font-weight:600;color:var(--espresso);text-align:center;line-height:1.35;animation:rslow 20s linear infinite;z-index:3}
+@keyframes rslow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.a-circle{position:absolute;top:8%;right:0;width:280px;height:280px;border-radius:50%;overflow:hidden;border:5px solid var(--cream);box-shadow:0 24px 60px rgba(42,27,14,.2)}
+.a-circle img{width:100%;height:100%;object-fit:cover}
+.a-rect-card{position:absolute;bottom:0;left:0;width:calc(100% - 100px);background:var(--espresso);border-radius:20px;padding:1.8rem;color:var(--cream)}
+.a-rect-title{font-family:'Fraunces',serif;font-size:1.1rem;font-style:italic;margin-bottom:.5rem}
+.a-rect-text{font-size:.8rem;color:var(--tan-light);line-height:1.65}
+
+/* ── MENU — Crafted with Intention ── */
+#menu{background:var(--espresso);padding:7rem 4rem;color:var(--cream)}
+.menu-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;max-width:1300px;margin-left:auto;margin-right:auto;flex-wrap:wrap;gap:1.5rem}
+#menu .sec-tag{color:var(--tan-light)}
+#menu .sec-title{color:var(--cream)}
+.view-all{display:flex;align-items:center;gap:.5rem;color:var(--tan-light);font-size:.82rem;font-weight:500;text-decoration:none}
+.menu-filters{display:flex;gap:.7rem;flex-wrap:wrap}
+.f-btn{font-size:.76rem;font-weight:500;color:var(--tan-light);background:rgba(250,244,232,.06);border:1px solid rgba(250,244,232,.15);border-radius:24px;padding:.5rem 1.3rem;cursor:none;transition:all .3s;font-family:'Inter',sans-serif}
+.f-btn.active,.f-btn:hover{color:var(--espresso);background:var(--tan-light);border-color:var(--tan-light)}
+
+/* MENU GRID — 4 cards circular photos */
+.menu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;max-width:1300px;margin:0 auto}
+.menu-card{text-align:center;cursor:none}
+.menu-circle{width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;position:relative;margin-bottom:1.3rem;border:4px solid rgba(250,244,232,.12);transition:transform .5s var(--ease-silk),border-color .4s,box-shadow .4s}
+.menu-card:hover .menu-circle{transform:scale(1.05) translateY(-6px);border-color:var(--tan-light);box-shadow:0 24px 50px rgba(42,27,14,.5)}
+.menu-circle img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-silk)}
+.menu-card:hover .menu-circle img{transform:scale(1.08)}
+.menu-card-name{font-size:.82rem;font-weight:600;color:var(--cream);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.3rem}
+.menu-card-sub{font-size:.75rem;color:rgba(250,244,232,.5);margin-bottom:.4rem}
+.menu-card-price{font-family:'Fraunces',serif;font-size:1.2rem;color:var(--tan-light)}
+
+/* ── FLAVORS — A Colour for Every Coffee ── */
+#flavors{background:var(--tan-bg);padding:7rem 4rem}
+.flavors-top{display:flex;justify-content:space-between;align-items:flex-end;max-width:1300px;margin:0 auto 3rem;flex-wrap:wrap;gap:1.5rem}
+.flavors-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;max-width:1300px;margin:0 auto}
+.flavor-card{text-align:center;cursor:none}
+/* Two-tone split circle exactly like reference */
+.flavor-circle{width:100%;aspect-ratio:1;border-radius:50%;position:relative;overflow:hidden;margin-bottom:1.2rem;box-shadow:0 16px 40px rgba(42,27,14,.15);transition:transform .4s var(--ease-bounce)}
+.flavor-card:hover .flavor-circle{transform:translateY(-10px)}
+.flavor-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.flavor-circle-ring{position:absolute;inset:0;border-radius:50%;border:3px solid var(--cream);pointer-events:none}
+.flavor-name{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--espresso);margin-bottom:.2rem}
+.flavor-origin{font-size:.7rem;color:var(--muted);margin-bottom:.2rem}
+.flavor-price{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--espresso)}
+
+/* ── PROCESS ── */
+#process{background:var(--cream);padding:7rem 4rem}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem;max-width:1300px;margin:3rem auto 0}
+.p-step{background:var(--tan-lighter);border-radius:24px;padding:2.2rem 1.6rem;transition:transform .4s var(--ease-bounce)}
+.p-step:hover{transform:translateY(-8px)}
+.p-num{width:44px;height:44px;border-radius:50%;background:var(--espresso);color:var(--cream);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:.95rem;margin-bottom:1.3rem}
+.p-title{font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:.5rem;color:var(--espresso)}
+.p-desc{font-size:.8rem;color:var(--muted);line-height:1.65}
+
+/* ── EXPERIENCE ── */
+#experience{background:var(--espresso);padding:7rem 4rem;color:var(--cream)}
+#experience .sec-tag{color:var(--tan-light)}
+#experience .sec-title{color:var(--cream)}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1300px;margin:0 auto}
+.exp-timeline{margin-top:3rem;position:relative}
+.exp-timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,var(--tan-light),transparent)}
+.tl-item{padding-left:2.2rem;padding-bottom:2rem;position:relative;opacity:0;transform:translateX(-24px);transition:all .7s var(--ease-silk)}
+.tl-item.visible{opacity:1;transform:translateX(0)}
+.tl-dot{position:absolute;left:-4px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--tan-light)}
+.tl-year{font-size:.65rem;font-weight:600;letter-spacing:.2em;color:var(--tan-light);text-transform:uppercase;margin-bottom:.3rem}
+.tl-text{font-size:.84rem;color:rgba(250,244,232,.6);line-height:1.7}
+.exp-photo-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;height:440px}
+.exp-photo{border-radius:16px;overflow:hidden;position:relative}
+.exp-photo img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-silk)}
+.exp-photo:hover img{transform:scale(1.06)}
+.exp-photo:first-child{grid-row:span 2;border-radius:24px}
+.exp-label{position:absolute;bottom:1rem;left:1rem;font-family:'Fraunces',serif;font-style:italic;font-size:.95rem;color:var(--cream);background:rgba(42,27,14,.6);backdrop-filter:blur(8px);padding:.4rem .9rem;border-radius:20px}
+
+/* ── TESTIMONIALS ── */
+#testimonials{background:var(--cream);padding:7rem 4rem}
+.t-track{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;max-width:1300px;margin:3rem auto 0}
+.t-card{background:var(--tan-lighter);border-radius:24px;padding:2.2rem;transition:transform .3s}
+.t-card:hover{transform:translateY(-6px)}
+.t-stars{color:var(--espresso);font-size:.82rem;margin-bottom:1rem;letter-spacing:.08em}
+.t-text{font-family:'Fraunces',serif;font-size:1.05rem;font-style:italic;line-height:1.75;color:var(--espresso-2);margin-bottom:1.6rem}
+.t-author{display:flex;align-items:center;gap:.8rem}
+.t-avatar{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.t-avatar img{width:100%;height:100%;object-fit:cover}
+.t-name{font-size:.84rem;font-weight:600;color:var(--espresso)}
+.t-role{font-size:.68rem;color:var(--muted);margin-top:.1rem}
+
+/* ── PRICING ── */
+#pricing{background:var(--tan-bg);padding:7rem 4rem}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;max-width:1060px;margin:3rem auto 0}
+.pr-card{background:var(--cream);border-radius:24px;padding:2.4rem;transition:transform .4s var(--ease-bounce)}
+.pr-card.feat{background:var(--espresso);color:var(--cream)}
+.pr-card:hover{transform:translateY(-8px)}
+.pr-badge{display:inline-block;background:rgba(42,27,14,.1);color:var(--espresso);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:14px;padding:.28rem .9rem;margin-bottom:1rem}
+.pr-card.feat .pr-badge{background:rgba(250,244,232,.12);color:var(--tan-light)}
+.pr-tier{font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:1rem;color:inherit}
+.pr-price{font-family:'Fraunces',serif;font-size:2.8rem;font-weight:500}
+.pr-per{font-size:.78rem;opacity:.55}
+.pr-div{height:1px;background:rgba(42,27,14,.12);margin:1.6rem 0}
+.pr-card.feat .pr-div{background:rgba(250,244,232,.12)}
+.pr-features{list-style:none;display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem;font-size:.82rem;color:var(--muted)}
+.pr-card.feat .pr-features{color:rgba(250,244,232,.7)}
+.pr-features li{display:flex;align-items:center;gap:.5rem}
+.pr-features li::before{content:'+';color:var(--tan);font-weight:700;font-size:.9rem}
+.pr-card.feat .pr-features li::before{color:var(--tan-light)}
+
+/* ── FAQ ── */
+#faq{background:var(--cream);padding:7rem 4rem}
+.faq-wrap{max-width:680px;margin:3rem auto 0}
+.faq-item{background:var(--tan-lighter);border-radius:18px;margin-bottom:.85rem;overflow:hidden}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.6rem;cursor:none}
+.faq-qt{font-family:'Fraunces',serif;font-size:1rem;color:var(--espresso)}
+.faq-ic{width:24px;height:24px;border-radius:50%;background:var(--espresso);color:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s;font-size:.78rem}
+.faq-item.open .faq-ic{transform:rotate(45deg)}
+.faq-ans{font-size:.84rem;color:var(--muted);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .5s var(--ease-silk),padding .3s;padding:0 1.6rem}
+.faq-item.open .faq-ans{max-height:200px;padding:0 1.6rem 1.4rem}
+
+/* ── CONTACT ── */
+#contact{background:var(--espresso);padding:7rem 4rem;color:var(--cream)}
+#contact .sec-tag{color:var(--tan-light)}
+#contact .sec-title{color:var(--cream)}
+.c-grid{display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;max-width:1300px;margin:0 auto;align-items:start}
+.c-detail{display:flex;gap:1.1rem;margin-bottom:1.6rem;align-items:flex-start}
+.c-icon{width:42px;height:42px;border-radius:50%;background:rgba(250,244,232,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.95rem}
+.c-lbl{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--tan-light);margin-bottom:.2rem;display:block}
+.c-val{font-size:.84rem;color:rgba(250,244,232,.6);line-height:1.6}
+.map-wrap{margin-top:2rem;border-radius:18px;overflow:hidden;height:200px}
+.map-wrap iframe{width:100%;height:100%;border:none;filter:sepia(.4) saturate(.5) brightness(.8)}
+.c-form{background:rgba(250,244,232,.05);border-radius:24px;padding:2.2rem;display:flex;flex-direction:column;gap:1.3rem}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.fg{display:flex;flex-direction:column;gap:.4rem}
+.fl{font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tan-light)}
+.fi,.ft{background:rgba(250,244,232,.07);border:1px solid rgba(250,244,232,.12);border-radius:12px;padding:.8rem 1rem;color:var(--cream);font-family:'Inter',sans-serif;font-size:.84rem;outline:none;transition:border-color .3s;width:100%}
+.fi:focus,.ft:focus{border-color:var(--tan-light)}
+.ft{resize:none;height:90px}
+.fi::placeholder,.ft::placeholder{color:rgba(250,244,232,.25)}
+
+/* COFFEE PHOTO ACCENT in contact */
+.c-photo-row{display:flex;gap:.8rem;margin-top:1.8rem}
+.c-photo-thumb{width:70px;height:70px;border-radius:50%;overflow:hidden;border:2px solid rgba(250,244,232,.15);flex-shrink:0;transition:transform .3s}
+.c-photo-thumb:hover{transform:scale(1.1)}
+.c-photo-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* FOOTER */
+footer{background:var(--espresso-3);padding:3.5rem 4rem 2rem}
+.footer-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;color:var(--cream)}
+.f-logo-mark{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;color:var(--cream)}
+.f-desc{font-size:.8rem;color:rgba(250,244,232,.45);line-height:1.75;margin-top:.8rem;max-width:240px}
+.f-col-title{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--tan-light);margin-bottom:1.2rem;display:block}
+.f-links{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.f-links a{font-size:.8rem;color:rgba(250,244,232,.45);text-decoration:none;transition:color .3s}
+.f-links a:hover{color:var(--tan-light)}
+.f-nl{display:flex;border-radius:30px;overflow:hidden;margin-top:.5rem}
+.f-nl-in{flex:1;background:rgba(250,244,232,.06);border:none;padding:.7rem 1rem;color:var(--cream);font-size:.78rem;outline:none;font-family:'Inter',sans-serif}
+.f-nl-btn{background:var(--tan-light);color:var(--espresso);border:none;padding:.7rem 1.2rem;cursor:none;font-size:.85rem;font-weight:600}
+.footer-bottom{max-width:1300px;margin:2.2rem auto 0;padding-top:1.6rem;border-top:1px solid rgba(250,244,232,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.f-copy{font-size:.7rem;color:rgba(250,244,232,.3)}
+.socials{display:flex;gap:.7rem}
+.s-link{width:32px;height:32px;border-radius:50%;background:rgba(250,244,232,.05);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:rgba(250,244,232,.45);text-decoration:none;transition:all .3s}
+.s-link:hover{background:var(--tan-light);color:var(--espresso)}
+
+/* FLOATERS */
+.wa-btn{position:fixed;bottom:2rem;left:2rem;z-index:1000;width:44px;height:44px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:none;font-size:1.2rem;box-shadow:0 8px 24px rgba(37,211,102,.3);transition:transform .3s var(--ease-bounce);text-decoration:none}
+.wa-btn:hover{transform:scale(1.15)}
+
+/* SECTION UTILITY */
+.sec-center{text-align:center;max-width:600px;margin:0 auto}
+
+/* ── FORM VALIDATION ── */
+.f-err{display:block;font-size:.68rem;color:#E07050;margin-top:.3rem;min-height:.9rem;font-style:italic}
+.fi.invalid,.ft.invalid{border-color:#E07050!important}
+.fi.valid{border-color:var(--tan-light)!important}
+
+/* ── SUCCESS MODAL ── */
+#successModal{position:fixed;inset:0;z-index:20000;display:none;align-items:center;justify-content:center;padding:2rem}
+#successModal.show{display:flex}
+.modal-backdrop{position:absolute;inset:0;background:rgba(42,27,14,.7);backdrop-filter:blur(8px)}
+.modal-box{position:relative;z-index:1;background:var(--cream);border-radius:28px;padding:3rem 2.5rem;max-width:460px;width:100%;text-align:center;box-shadow:0 40px 80px rgba(42,27,14,.3);animation:modalPop .5s var(--ease-bounce)}
+@keyframes modalPop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-icon{width:72px;height:72px;border-radius:50%;background:var(--tan-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem}
+.modal-title{font-family:'Fraunces',serif;font-size:1.8rem;color:var(--espresso);margin-bottom:.6rem}
+.modal-sub{font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:.4rem}
+.modal-ref{font-size:.72rem;color:var(--muted);margin-bottom:2rem;font-style:italic}
+.modal-close{background:var(--espresso);color:var(--cream);border:none;border-radius:30px;padding:.85rem 2rem;font-size:.84rem;font-weight:600;cursor:none;font-family:'Inter',sans-serif;transition:transform .3s}
+.modal-close:hover{transform:scale(1.04)}
+
+/* ── DASHBOARD ── */
+#dashboard{display:none;margin-top:1.5rem;background:rgba(250,244,232,.05);border:1px solid rgba(250,244,232,.12);border-radius:20px;overflow:hidden}
+#dashboard.show{display:block}
+.dash-head{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.5rem;border-bottom:1px solid rgba(250,244,232,.1)}
+.dash-title{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--cream)}
+.dash-count{font-size:.72rem;background:var(--tan-light);color:var(--espresso);border-radius:14px;padding:.2rem .8rem;font-weight:600}
+.dash-clear{font-size:.7rem;color:rgba(250,244,232,.35);background:none;border:none;cursor:none;font-family:'Inter',sans-serif;transition:color .3s}
+.dash-clear:hover{color:#E07050}
+.dash-empty{padding:2rem;text-align:center;font-size:.85rem;color:rgba(250,244,232,.35);font-style:italic}
+.dash-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.dash-table th{padding:.8rem 1rem;text-align:left;font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tan-light);border-bottom:1px solid rgba(250,244,232,.1);background:rgba(250,244,232,.03)}
+.dash-table td{padding:.85rem 1rem;color:rgba(250,244,232,.7);border-bottom:1px solid rgba(250,244,232,.06);vertical-align:middle}
+.dash-table tr:last-child td{border-bottom:none}
+.dash-table tr:hover td{background:rgba(250,244,232,.03)}
+.dash-status{display:inline-block;background:rgba(80,180,80,.15);color:#80C880;border-radius:10px;padding:.15rem .6rem;font-size:.65rem;font-weight:600;letter-spacing:.05em}
+.dash-del{background:none;border:none;color:rgba(250,244,232,.25);cursor:none;font-size:.8rem;transition:color .3s;padding:.2rem}
+.dash-del:hover{color:#E07050}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-follower"></div>
+
+<div id="loader">
+  <div id="l-logo">HARS</div>
+  <div id="l-city">Kolhapur · Maharashtra</div>
+  <div id="l-bar-wrap"><div id="l-bar"></div></div>
+  <div id="l-pct">0%</div>
+</div>
+
+<nav id="navbar">
+  <div class="nav-logo">HARS</div>
+  <ul class="nav-links">
+    <li><a href="#about">Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#flavors">Flavours</a></li>
+    <li><a href="#experience">Journey</a></li>
+    <li><a href="#contact">Visit</a></li>
+  </ul>
+  <button class="nav-cta">Reserve a Table →</button>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow" id="hEyebrow"><span class="loc-pulse"></span>Est. 2019 · Kolhapur, Maharashtra</div>
+      <h1 class="hero-title">
+        <span class="line"><span>What</span></span>
+        <span class="line"><span><span class="hl">Creativity</span></span></span>
+        <span class="line"><span>Means to Coffee</span></span>
+      </h1>
+      <p class="hero-sub" id="hSub">Hand-crafted specialty coffee rooted in Kolhapur's bold heritage. Every cup — a small act of pure craftsmanship.</p>
+      <div class="hero-btns" id="hBtns">
+        <button class="btn-dark">Shop Our Beans →</button>
+        <button class="btn-outline">Our Story</button>
+      </div>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="hero-img-main">
+        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=900&q=85&fit=crop" alt="Coffee latte art" loading="eager">
+      </div>
+      <div class="hero-badge"><span class="hero-badge-num">144K</span><span class="hero-badge-txt">Happy Customers</span></div>
+      <div class="hero-float-card">
+        <div class="float-icon"><img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=80&q=80&fit=crop" alt="espresso"></div>
+        <div><div class="float-label">Today's Brew</div><div class="float-val">Ethiopian Roast</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="m-item">Single Origin Estates <span class="m-dot"></span></span>
+    <span class="m-item">Kolhapur's Finest Café <span class="m-dot"></span></span>
+    <span class="m-item">Hand-Crafted Blends <span class="m-dot"></span></span>
+    <span class="m-item">Award Winning Baristas <span class="m-dot"></span></span>
+    <span class="m-item">Specialty Cold Brew <span class="m-dot"></span></span>
+    <span class="m-item">Ethiopian Yirgacheffe <span class="m-dot"></span></span>
+    <span class="m-item">Japanese Pour Over <span class="m-dot"></span></span>
+    <span class="m-item">Single Origin Estates <span class="m-dot"></span></span>
+    <span class="m-item">Kolhapur's Finest Café <span class="m-dot"></span></span>
+    <span class="m-item">Hand-Crafted Blends <span class="m-dot"></span></span>
+    <span class="m-item">Award Winning Baristas <span class="m-dot"></span></span>
+    <span class="m-item">Specialty Cold Brew <span class="m-dot"></span></span>
+    <span class="m-item">Ethiopian Yirgacheffe <span class="m-dot"></span></span>
+    <span class="m-item">Japanese Pour Over <span class="m-dot"></span></span>
+  </div>
+</div>
+
+<!-- ════ ABOUT ════ -->
+<section id="about">
+  <div class="about-grid">
+    <div>
+      <span class="sec-tag reveal">Our Story</span>
+      <h2 class="sec-title reveal s1">What <span class="hl">Creativity</span><br>Means to Us</h2>
+      <p class="reveal s2" style="margin-top:1.2rem;color:var(--muted);line-height:1.8;font-size:.92rem;max-width:420px">Born in the vibrant city of Kolhapur — famous for its heritage, its boldness, and its soul — HARS was founded on a simple belief: that coffee is not just a beverage, it is an experience.</p>
+      <button class="about-shop-btn reveal s2">Shop Our Beans →</button>
+      <div class="about-features">
+        <div class="about-feat reveal s1">Sourcing <span class="feat-arrow">→</span></div>
+        <div class="about-feat reveal s2">Roasting <span class="feat-arrow">→</span></div>
+        <div class="about-feat reveal s3">Quality Control <span class="feat-arrow">→</span></div>
+        <div class="about-feat reveal s4">Our Guarantee <span class="feat-arrow">→</span></div>
+      </div>
+    </div>
+    <div class="about-visual reveal s2">
+      <div class="a-stamp">144K<br>HAPPY<br>GUESTS</div>
+      <div class="a-circle">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=85&fit=crop" alt="Barista crafting coffee">
+      </div>
+      <div class="a-rect-card">
+        <div class="a-rect-title">Beauty is in the cup.</div>
+        <div class="a-rect-text">Our collection of stores, each of which exists in the real, three-dimensional world of Kolhapur. Every batch roasted by hand, in small quantities, with full intention.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MENU — Crafted With Intention ════ -->
+<section id="menu">
+  <div style="max-width:1300px;margin:0 auto">
+    <div class="menu-top">
+      <div>
+        <span class="sec-tag reveal">Crafted With Intention</span>
+        <h2 class="sec-title reveal s1">A Colour for<br>Every <span class="hl">Coffee</span></h2>
+      </div>
+      <a href="#" class="view-all reveal s1">Home Roasted Coffee · View All →</a>
+    </div>
+    <div class="menu-filters reveal s2" style="margin-bottom:2.5rem;max-width:1300px;margin-left:auto;margin-right:auto">
+      <button class="f-btn active">All</button>
+      <button class="f-btn">Hot</button>
+      <button class="f-btn">Cold</button>
+      <button class="f-btn">Specials</button>
+
+<!-- ── SUCCESS MODAL ── -->
+<div id="successModal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-box">
+    <div class="modal-icon">☕</div>
+    <div class="modal-title">Table Reserved!</div>
+    <div class="modal-sub" id="modalSub">We've saved your table, <strong id="modalName"></strong>. See you soon at HARS Kolhapur.</div>
+    <div class="modal-ref" id="modalRef"></div>
+    <button class="modal-close" onclick="closeModal()">Perfect, See You There →</button>
+  </div>
+</div>
+
+<!-- ── RESERVATIONS DASHBOARD ── -->
+<div id="dashboard">
+  <div class="dash-head">
+    <span class="dash-title">Reservations</span>
+    <div style="display:flex;align-items:center;gap:.8rem">
+      <span class="dash-count" id="dashCount">0</span>
+      <button class="dash-clear" onclick="clearAll()">Clear All</button>
+    </div>
+  </div>
+  <div id="dashBody"></div>
+</div>
+
+    </div>
+  </div>
+  <div class="menu-grid">
+    <div class="menu-card reveal s1">
+      <div class="menu-circle">
+        <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&q=85&fit=crop&crop=center" alt="Frappuccino">
+      </div>
+      <div class="menu-card-name">Frappuccino</div>
+      <div class="menu-card-sub">Ethiopia · Blended</div>
+      <div class="menu-card-price">₹171</div>
+    </div>
+    <div class="menu-card reveal s2">
+      <div class="menu-circle">
+        <img src="https://images.unsplash.com/photo-1534040385115-33dcb3acba5b?w=600&q=85&fit=crop&crop=center" alt="Caramel Macchiato">
+      </div>
+      <div class="menu-card-name">Caramel Macchiato</div>
+      <div class="menu-card-sub">Colombia · Espresso</div>
+      <div class="menu-card-price">₹87</div>
+    </div>
+    <div class="menu-card reveal s3">
+      <div class="menu-circle">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=85&fit=crop&crop=center" alt="Café Mocha">
+      </div>
+      <div class="menu-card-name">Café Mocha</div>
+      <div class="menu-card-sub">Brazil · Dark Roast</div>
+      <div class="menu-card-price">₹158</div>
+    </div>
+    <div class="menu-card reveal s4">
+      <div class="menu-circle">
+        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=85&fit=crop&crop=center" alt="Turkish Coffee">
+      </div>
+      <div class="menu-card-name">Turkish Coffee</div>
+      <div class="menu-card-sub">Single Origin · Strong</div>
+      <div class="menu-card-price">₹47</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FLAVORS — A Colour for Every Coffee ════ -->
+<section id="flavors">
+  <div class="flavors-top">
+    <div>
+      <span class="sec-tag reveal">Have a Cup Of</span>
+      <h2 class="sec-title reveal s1">A <span class="hl">Colour</span> for<br>Every Coffee</h2>
+    </div>
+    <a href="#" class="view-all reveal s1">Home Roasted Coffee · View All →</a>
+  </div>
+  <div class="flavors-grid">
+    <div class="flavor-card reveal s1">
+      <div class="flavor-circle">
+        <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=85&fit=crop&crop=center" alt="Iced Cold Brew">
+        <div class="flavor-circle-ring"></div>
+      </div>
+      <div class="flavor-name">Signature Cold Brew</div>
+      <div class="flavor-origin">Colombia · 18hr Steep</div>
+      <div class="flavor-price">₹340</div>
+    </div>
+    <div class="flavor-card reveal s2">
+      <div class="flavor-circle">
+        <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=600&q=85&fit=crop&crop=center" alt="Espresso">
+        <div class="flavor-circle-ring"></div>
+      </div>
+      <div class="flavor-name">Signature Espresso</div>
+      <div class="flavor-origin">Ethiopia · Single Origin</div>
+      <div class="flavor-price">₹280</div>
+    </div>
+    <div class="flavor-card reveal s3">
+      <div class="flavor-circle">
+        <img src="golden-latte.png" alt="Golden Latte">
+        <div class="flavor-circle-ring"></div>
+      </div>
+      <div class="flavor-name">Golden Latte</div>
+      <div class="flavor-origin">House Blend · Oat Milk</div>
+      <div class="flavor-price">₹360</div>
+    </div>
+    <div class="flavor-card reveal s4">
+      <div class="flavor-circle">
+        <img src="kyoto-pour-over.png" alt="Kyoto Pour Over">
+        <div class="flavor-circle-ring"></div>
+      </div>
+      <div class="flavor-name">Kyoto Pour Over</div>
+      <div class="flavor-origin">Japan · Precision Brew</div>
+      <div class="flavor-price">₹420</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PROCESS ════ -->
+<section id="process">
+  <div style="max-width:1300px;margin:0 auto">
+    <div class="sec-center">
+      <span class="sec-tag reveal" style="display:inline-block">How We Craft</span>
+      <h2 class="sec-title reveal s1">From Bean to <span class="hl">Cup</span></h2>
+    </div>
+    <div class="process-steps">
+      <div class="p-step reveal s1"><div class="p-num">01</div><div class="p-title">Source</div><div class="p-desc">Direct trade from 12 estates across 8 countries. Only the top 3% of harvests make it here.</div></div>
+      <div class="p-step reveal s2"><div class="p-num">02</div><div class="p-title">Roast</div><div class="p-desc">Small-batch, hand-profiled roasting in our Kolhapur roastery. Every batch unique.</div></div>
+      <div class="p-step reveal s3"><div class="p-num">03</div><div class="p-title">Brew</div><div class="p-desc">Precision extraction at exact temperatures and pressures. Science meets soul.</div></div>
+      <div class="p-step reveal s4"><div class="p-num">04</div><div class="p-title">Serve</div><div class="p-desc">Presented with intention. Every cup a ceremony, every guest an honoured guest.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ EXPERIENCE ════ -->
+<section id="experience">
+  <div class="exp-grid">
+    <div>
+      <span class="sec-tag reveal">Since 2019</span>
+      <h2 class="sec-title reveal s1">Our <span class="hl">Journey</span><br>in Kolhapur</h2>
+      <div class="exp-timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2019</div><div class="tl-text">HARS opens in Kolhapur with 8 seats and a dream. Sells out every single day, first week.</div></div>
+        <div class="tl-item" style="transition-delay:.15s"><div class="tl-dot"></div><div class="tl-year">2020</div><div class="tl-text">Launches Kolhapur's first specialty cold brew. Ships across Maharashtra to 400+ homes.</div></div>
+        <div class="tl-item" style="transition-delay:.3s"><div class="tl-dot"></div><div class="tl-year">2022</div><div class="tl-text">Wins "Best Café — Kolhapur" at the Maharashtra F&B Awards. Expands to 40 seats.</div></div>
+        <div class="tl-item" style="transition-delay:.45s"><div class="tl-dot"></div><div class="tl-year">Today</div><div class="tl-text">Kolhapur's destination for coffee lovers, creatives, and dreamers.</div></div>
+      </div>
+    </div>
+    <div class="exp-photo-col reveal s2">
+      <div class="exp-photo" style="position:relative">
+        <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600&q=85&fit=crop" alt="Coffee experience">
+        <div class="exp-label">"Every great cup tells a story."</div>
+      </div>
+      <div class="exp-photo">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80&fit=crop" alt="Pour over">
+      </div>
+      <div class="exp-photo">
+        <img src="https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=400&q=80&fit=crop" alt="Coffee beans">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ TESTIMONIALS ════ -->
+<section id="testimonials">
+  <div style="max-width:1300px;margin:0 auto">
+    <div class="sec-center">
+      <span class="sec-tag reveal" style="display:inline-block">What They Say</span>
+      <h2 class="sec-title reveal s1">Loved by <span class="hl">Coffee Lovers</span></h2>
+    </div>
+    <div class="t-track">
+      <div class="t-card reveal s1">
+        <div class="t-stars">★★★★★</div>
+        <div class="t-text">The pour-over at HARS is the finest I've had outside Japan. Impeccable attention to temperature, timing, and soul.</div>
+        <div class="t-author">
+          <div class="t-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80&fit=crop&crop=face" alt="Arjun"></div>
+          <div><div class="t-name">Arjun Rao</div><div class="t-role">Coffee Enthusiast, Mumbai</div></div>
+        </div>
+      </div>
+      <div class="t-card reveal s2">
+        <div class="t-stars">★★★★★</div>
+        <div class="t-text">Walking into HARS Kolhapur feels like entering a sanctuary. Everything is curated to perfection.</div>
+        <div class="t-author">
+          <div class="t-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80&fit=crop&crop=face" alt="Shreya"></div>
+          <div><div class="t-name">Shreya Mehta</div><div class="t-role">Architect, Pune</div></div>
+        </div>
+      </div>
+      <div class="t-card reveal s3">
+        <div class="t-stars">★★★★★</div>
+        <div class="t-text">Their cold brew is legendary in Kolhapur. I drive from Sangli just to sit here for an hour.</div>
+        <div class="t-author">
+          <div class="t-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80&fit=crop&crop=face" alt="Kabir"></div>
+          <div><div class="t-name">Kabir Patel</div><div class="t-role">Photographer, Sangli</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PRICING ════ -->
+<section id="pricing">
+  <div style="max-width:1300px;margin:0 auto">
+    <div class="sec-center">
+      <span class="sec-tag reveal" style="display:inline-block">Memberships</span>
+      <h2 class="sec-title reveal s1">Become a <span class="hl">HARS Regular</span></h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="pr-card reveal s1">
+        <div class="pr-badge">Connoisseur</div>
+        <div class="pr-tier">Starter</div>
+        <div><span class="pr-price">₹999</span><span class="pr-per"> /month</span></div>
+        <div class="pr-div"></div>
+        <ul class="pr-features"><li>4 complimentary drip coffees</li><li>10% off all food</li><li>Priority weekend seating</li></ul>
+        <button class="btn-outline" style="width:100%;justify-content:center">Join →</button>
+      </div>
+      <div class="pr-card feat reveal s2">
+        <div class="pr-badge">Most Popular</div>
+        <div class="pr-tier">Reserve</div>
+        <div><span class="pr-price">₹1999</span><span class="pr-per"> /month</span></div>
+        <div class="pr-div"></div>
+        <ul class="pr-features"><li>Unlimited filter coffee</li><li>20% off entire menu</li><li>Dedicated reserved table</li><li>Private cupping sessions</li></ul>
+        <button class="btn-dark" style="width:100%;justify-content:center;background:var(--tan-light);color:var(--espresso)">Join Reserve →</button>
+      </div>
+      <div class="pr-card reveal s3">
+        <div class="pr-badge">Atelier</div>
+        <div class="pr-tier">Premium</div>
+        <div><span class="pr-price">₹4999</span><span class="pr-per"> /month</span></div>
+        <div class="pr-div"></div>
+        <ul class="pr-features"><li>Unlimited specialty bar</li><li>30% off all menu items</li><li>Private event space</li></ul>
+        <button class="btn-outline" style="width:100%;justify-content:center">Join →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FAQ ════ -->
+<section id="faq">
+  <div style="max-width:1300px;margin:0 auto">
+    <div class="sec-center">
+      <span class="sec-tag reveal" style="display:inline-block">Questions</span>
+      <h2 class="sec-title reveal s1">Everything You <span class="hl">Need to Know</span></h2>
+    </div>
+    <div class="faq-wrap">
+      <div class="faq-item reveal"><div class="faq-q"><span class="faq-qt">Do you take weekend reservations?</span><span class="faq-ic">+</span></div><div class="faq-ans">Yes! Highly recommended for Fri–Sun. Reserve via the form below or WhatsApp us directly.</div></div>
+      <div class="faq-item reveal s1"><div class="faq-q"><span class="faq-qt">Do you offer home delivery subscriptions?</span><span class="faq-ic">+</span></div><div class="faq-ans">Weekly or fortnightly freshly roasted bean delivery across Kolhapur and nearby cities.</div></div>
+      <div class="faq-item reveal s2"><div class="faq-q"><span class="faq-qt">Can I host a private event at HARS?</span><span class="faq-ic">+</span></div><div class="faq-ans">Our loft seats up to 25 guests privately — product launches, brunches, creative sessions.</div></div>
+      <div class="faq-item reveal s3"><div class="faq-q"><span class="faq-qt">Are your beans ethically sourced?</span><span class="faq-ic">+</span></div><div class="faq-ans">Always. Direct trade, above Fair Trade premiums. Full supply chain transparency reports published annually.</div></div>
+      <div class="faq-item reveal s4"><div class="faq-q"><span class="faq-qt">What are your Kolhapur hours?</span><span class="faq-ic">+</span></div><div class="faq-ans">Mon–Fri 8am–8pm · Sat–Sun 8am–9pm. Follow us on Instagram for event nights.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CONTACT ════ -->
+<section id="contact">
+  <div class="c-grid">
+    <div>
+      <span class="sec-tag reveal">Find Us in Kolhapur</span>
+      <h2 class="sec-title reveal s1">Come <span class="hl">Visit</span></h2>
+      <div style="margin-top:2rem">
+        <div class="c-detail reveal s1"><div class="c-icon">📍</div><div><span class="c-lbl">Address</span><span class="c-val">12, Station Road, Shahupuri<br>Kolhapur, Maharashtra 416001</span></div></div>
+        <div class="c-detail reveal s2"><div class="c-icon">🕐</div><div><span class="c-lbl">Hours</span><span class="c-val">Mon–Fri 8am–8pm · Sat–Sun 8am–9pm</span></div></div>
+        <div class="c-detail reveal s3"><div class="c-icon">📞</div><div><span class="c-lbl">Phone / WhatsApp</span><span class="c-val">+91 98765 43210</span></div></div>
+        <div class="c-detail reveal s4"><div class="c-icon">✉️</div><div><span class="c-lbl">Email</span><span class="c-val">hello@harscoffee.in</span></div></div>
+      </div>
+      <div class="c-photo-row reveal s2">
+        <div class="c-photo-thumb"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=140&q=80&fit=crop" alt="café"></div>
+        <div class="c-photo-thumb"><img src="https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=140&q=80&fit=crop" alt="beans"></div>
+        <div class="c-photo-thumb"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=140&q=80&fit=crop" alt="brew"></div>
+        <div class="c-photo-thumb"><img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=140&q=80&fit=crop" alt="iced"></div>
+      </div>
+      <div class="map-wrap reveal s3">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d60888.68!2d74.23!3d16.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc1002a40e7fad3%3A0xd3ef3b74e3cf7e2e!2sKolhapur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="reveal s2">
+      <span class="sec-tag" style="color:var(--tan-light);display:block;margin-bottom:1.5rem">Reserve a Table</span>
+      <div class="c-form" id="reserveForm">
+        <div class="f-row">
+          <div class="fg">
+            <label class="fl" for="r-name">Name *</label>
+            <input class="fi" id="r-name" type="text" placeholder="Your name" autocomplete="name">
+            <span class="f-err" id="err-name"></span>
+          </div>
+          <div class="fg">
+            <label class="fl" for="r-phone">Phone *</label>
+            <input class="fi" id="r-phone" type="tel" placeholder="+91 00000 00000">
+            <span class="f-err" id="err-phone"></span>
+          </div>
+        </div>
+        <div class="f-row">
+          <div class="fg">
+            <label class="fl" for="r-date">Date *</label>
+            <input class="fi" id="r-date" type="date">
+            <span class="f-err" id="err-date"></span>
+          </div>
+          <div class="fg">
+            <label class="fl" for="r-guests">Guests *</label>
+            <input class="fi" id="r-guests" type="number" placeholder="2" min="1" max="25">
+            <span class="f-err" id="err-guests"></span>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl" for="r-email">Email</label>
+          <input class="fi" id="r-email" type="email" placeholder="your@email.com">
+        </div>
+        <div class="fg">
+          <label class="fl" for="r-msg">Special Requests</label>
+          <textarea class="ft" id="r-msg" placeholder="Dietary needs, occasion, preferences..."></textarea>
+        </div>
+        <button class="btn-dark" id="reserveBtn" style="background:var(--tan-light);color:var(--espresso);align-self:flex-start" onclick="submitReservation()">
+          Reserve Now →
+        </button>
+      </div>
+      <button onclick="toggleDashboard()" id="dashToggleBtn" style="margin-top:1.2rem;background:transparent;border:1px solid rgba(250,244,232,.2);color:rgba(250,244,232,.5);border-radius:24px;padding:.5rem 1.2rem;font-size:.72rem;font-family:Inter,sans-serif;cursor:none;transition:all .3s;display:block">
+        📋 View All Reservations
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="f-logo-mark">HARS</div>
+      <div class="f-desc">A sanctuary for coffee lovers in the heart of Kolhapur, Maharashtra. Crafted with care, served with intention.</div>
+    </div>
+    <div>
+      <span class="f-col-title">Navigate</span>
+      <ul class="f-links"><li><a href="#about">Our Story</a></li><li><a href="#menu">Menu</a></li><li><a href="#flavors">Flavours</a></li><li><a href="#pricing">Memberships</a></li><li><a href="#contact">Visit Us</a></li></ul>
+    </div>
+    <div>
+      <span class="f-col-title">Connect</span>
+      <ul class="f-links"><li><a href="#">Instagram</a></li><li><a href="#">Twitter / X</a></li><li><a href="#">Facebook</a></li><li><a href="#">Pinterest</a></li></ul>
+    </div>
+    <div>
+      <span class="f-col-title">Newsletter</span>
+      <p style="font-size:.78rem;color:rgba(250,244,232,.45);margin-bottom:1rem;line-height:1.7">Monthly tasting notes & secret drops from Kolhapur.</p>
+      <div class="f-nl"><input class="f-nl-in" type="email" placeholder="your@email.com"><button class="f-nl-btn">→</button></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="f-copy">© 2026 HARS Coffee · Kolhapur, Maharashtra · India. All rights reserved.</span>
+    <div class="socials"><a href="#" class="s-link">ig</a><a href="#" class="s-link">tw</a><a href="#" class="s-link">fb</a></div>
+  </div>
+</footer>
+
+<a href="https://wa.me/919876543210" class="wa-btn">💬</a>
+
+<script>
+// LOADER
+const lEl=document.getElementById('loader'),lLogo=document.getElementById('l-logo'),lCity=document.getElementById('l-city'),lBar=document.getElementById('l-bar'),lPct=document.getElementById('l-pct');
+let prog=0;
+setTimeout(()=>{lLogo.style.opacity='1';lLogo.style.transform='translateY(0)';lCity.style.opacity='1';lPct.style.opacity='1'},80);
+const lInt=setInterval(()=>{
+  prog+=Math.random()*7+2;if(prog>=100){prog=100;clearInterval(lInt);}
+  lBar.style.width=prog+'%';lPct.textContent=Math.round(prog)+'%';
+  if(prog>=100){setTimeout(()=>{lEl.style.transition='opacity .9s,transform .9s';lEl.style.opacity='0';lEl.style.transform='translateY(-100%)';setTimeout(()=>{lEl.style.display='none';init();},900);},300);}
+},80);
+
+// CURSOR
+const cur=document.getElementById('cursor'),fol=document.getElementById('cursor-follower');
+let mx=0,my=0,fx=0,fy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function af(){fx+=(mx-fx)*.12;fy+=(my-fy)*.12;fol.style.left=fx+'px';fol.style.top=fy+'px';requestAnimationFrame(af);})();
+document.querySelectorAll('button,a,.menu-card,.faq-q,.about-feat,.flavor-card,.t-card,.c-photo-thumb').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';fol.style.width='52px';fol.style.height='52px';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';fol.style.width='38px';fol.style.height='38px';});
+});
+
+// NAV
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>80));
+
+// INIT
+function init(){
+  document.querySelectorAll('.hero-title .line span').forEach((el,i)=>{
+    setTimeout(()=>{el.style.transition=`opacity .9s cubic-bezier(.16,1,.3,1) ${i*.14}s,transform .9s cubic-bezier(.16,1,.3,1) ${i*.14}s`;el.style.opacity='1';el.style.transform='translateY(0)';},150);
+  });
+  const ey=document.getElementById('hEyebrow'),sub=document.getElementById('hSub'),btns=document.getElementById('hBtns');
+  setTimeout(()=>{ey.style.transition='opacity .8s,transform .8s';ey.style.opacity='1';ey.style.transform='translateY(0)';},100);
+  setTimeout(()=>{sub.style.transition='opacity .8s,transform .8s';sub.style.opacity='1';sub.style.transform='translateY(0)';},750);
+  setTimeout(()=>{btns.style.transition='opacity .8s,transform .8s';btns.style.opacity='1';btns.style.transform='translateY(0)';},900);
+
+  const io=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  const tio=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.18});
+  document.querySelectorAll('.tl-item').forEach(el=>tio.observe(el));
+}
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const it=q.parentElement,was=it.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!was)it.classList.add('open');
+  });
+});
+
+// FILTERS
+document.querySelectorAll('.f-btn').forEach(b=>{
+  b.addEventListener('click',()=>{document.querySelectorAll('.f-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');});
+});
+
+// MAGNETIC BUTTONS
+document.querySelectorAll('.btn-dark,.btn-outline,.nav-cta,.about-shop-btn').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{const r=btn.getBoundingClientRect();btn.style.transform=`translate(${(e.clientX-(r.left+r.width/2))*.12}px,${(e.clientY-(r.top+r.height/2))*.18}px)`;});
+  btn.addEventListener('mouseleave',()=>btn.style.transform='');
+});
+
+// PARALLAX HERO
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY;
+  const hv=document.querySelector('.hero-visual');
+  if(hv)hv.style.transform=`translateY(${sy*.08}px)`;
+});
+
+// ── RESERVATION SYSTEM ──
+const STORAGE_KEY = 'hars_reservations';
+
+function getReservations() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function saveReservations(list) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function validateForm() {
+  let valid = true;
+  const fields = [
+    { id: 'r-name',   err: 'err-name',   msg: 'Please enter your name',        check: v => v.trim().length >= 2 },
+    { id: 'r-phone',  err: 'err-phone',  msg: 'Enter a valid 10-digit number',  check: v => /^[+\d][\d\s\-]{8,14}$/.test(v.trim()) },
+    { id: 'r-date',   err: 'err-date',   msg: 'Please select a date',           check: v => !!v && new Date(v) >= new Date(new Date().toDateString()) },
+    { id: 'r-guests', err: 'err-guests', msg: 'Enter 1–25 guests',              check: v => v >= 1 && v <= 25 },
+  ];
+  fields.forEach(f => {
+    const inp = document.getElementById(f.id);
+    const errEl = document.getElementById(f.err);
+    const ok = f.check(inp.value);
+    errEl.textContent = ok ? '' : f.msg;
+    inp.classList.toggle('invalid', !ok);
+    inp.classList.toggle('valid', ok);
+    if (!ok) valid = false;
+  });
+  // email optional but validate if filled
+  const emailEl = document.getElementById('r-email');
+  if (emailEl.value && !/^[^@]+@[^@]+\.[^@]+$/.test(emailEl.value)) {
+    emailEl.classList.add('invalid');
+    valid = false;
+  } else {
+    emailEl.classList.remove('invalid');
+  }
+  return valid;
+}
+
+function submitReservation() {
+  if (!validateForm()) return;
+  const btn = document.getElementById('reserveBtn');
+  btn.textContent = 'Saving…';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const reservation = {
+      id: 'HRS-' + Date.now().toString(36).toUpperCase(),
+      name:    document.getElementById('r-name').value.trim(),
+      phone:   document.getElementById('r-phone').value.trim(),
+      date:    document.getElementById('r-date').value,
+      guests:  document.getElementById('r-guests').value,
+      email:   document.getElementById('r-email').value.trim(),
+      message: document.getElementById('r-msg').value.trim(),
+      status:  'Confirmed',
+      created: new Date().toISOString(),
+    };
+
+    const list = getReservations();
+    list.unshift(reservation);
+    saveReservations(list);
+
+    // Show modal
+    document.getElementById('modalName').textContent = reservation.name;
+    document.getElementById('modalSub').innerHTML =
+      'We\'ve saved your table for <strong>' + reservation.guests + ' guest' + (reservation.guests > 1 ? 's' : '') +
+      '</strong> on <strong>' + new Date(reservation.date).toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long'}) + '</strong>. See you soon at HARS Kolhapur!';
+    document.getElementById('modalRef').textContent = 'Reservation ID: ' + reservation.id;
+    document.getElementById('successModal').classList.add('show');
+
+    // Reset form
+    ['r-name','r-phone','r-date','r-guests','r-email','r-msg'].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = '';
+      el.classList.remove('valid','invalid');
+    });
+    ['err-name','err-phone','err-date','err-guests'].forEach(id => document.getElementById(id).textContent = '');
+    btn.textContent = 'Reserve Now →';
+    btn.disabled = false;
+
+    renderDashboard();
+  }, 600);
+}
+
+function closeModal() {
+  document.getElementById('successModal').classList.remove('show');
+}
+
+function toggleDashboard() {
+  const db = document.getElementById('dashboard');
+  const btn = document.getElementById('dashToggleBtn');
+  const show = !db.classList.contains('show');
+  db.classList.toggle('show', show);
+  btn.textContent = show ? '✕ Hide Reservations' : '📋 View All Reservations';
+  if (show) renderDashboard();
+}
+
+function deleteReservation(id) {
+  const list = getReservations().filter(r => r.id !== id);
+  saveReservations(list);
+  renderDashboard();
+}
+
+function clearAll() {
+  if (confirm('Clear all reservations? This cannot be undone.')) {
+    saveReservations([]);
+    renderDashboard();
+  }
+}
+
+function renderDashboard() {
+  const list = getReservations();
+  const body = document.getElementById('dashBody');
+  const count = document.getElementById('dashCount');
+  count.textContent = list.length;
+  if (!list.length) {
+    body.innerHTML = '<div class="dash-empty">No reservations yet. They will appear here once submitted.</div>';
+    return;
+  }
+  body.innerHTML = '<table class="dash-table"><thead><tr>' +
+    '<th>ID</th><th>Name</th><th>Phone</th><th>Date</th><th>Guests</th><th>Email</th><th>Status</th><th></th>' +
+    '</tr></thead><tbody>' +
+    list.map(r => '<tr>' +
+      '<td style="font-size:.65rem;opacity:.6">' + r.id + '</td>' +
+      '<td><strong style="color:var(--cream)">' + esc(r.name) + '</strong>' + (r.message ? '<br><span style="font-size:.68rem;opacity:.5">' + esc(r.message.substring(0,40)) + (r.message.length>40?'…':'') + '</span>' : '') + '</td>' +
+      '<td>' + esc(r.phone) + '</td>' +
+      '<td>' + new Date(r.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) + '</td>' +
+      '<td style="text-align:center">' + r.guests + '</td>' +
+      '<td>' + (r.email ? esc(r.email) : '—') + '</td>' +
+      '<td><span class="dash-status">' + r.status + '</span></td>' +
+      '<td><button class="dash-del" onclick="deleteReservation(\'' + r.id + '\')" title="Delete">✕</button></td>' +
+    '</tr>').join('') +
+    '</tbody></table>';
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Live validation on input
+['r-name','r-phone','r-date','r-guests','r-email'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => validateForm());
+});
+
+// Nav Reserve button scrolls to contact
+document.querySelector('.nav-cta').addEventListener('click', () => {
+  document.getElementById('contact').scrollIntoView({behavior:'smooth'});
+});
+
+// Keyboard close modal
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Init dashboard count on load
+window.addEventListener('load', () => {
+  const count = document.getElementById('dashCount');
+  if (count) count.textContent = getReservations().length;
+});
+
+</script>
+</body>
+</html>
